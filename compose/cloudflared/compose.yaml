@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+    networks:
+      macvlan_100 :
+             ipv4_address: 192.168.100.3
+
+networks:
+  macvlan_100:
+#  proxy:
+    external: true
