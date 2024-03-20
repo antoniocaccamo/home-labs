@@ -1,113 +1,43 @@
-# version: '3'
+version: '3'
 
 services:
-#   traefik:
-#     image: "traefik:v2.11"
-#     container_name: traefik
-# #   restart: unless-stopped
-#     security_opt:
-#       - no-new-privileges:true
-#     networks:
-#       - proxy
-#     ports:
-#       - 8080:8080
-#       - 8443:443
-#     environment:
-#       #- CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
-#       # If you choose to use an API Key instead of a Token, specify your email as well
-#       - CF_API_EMAIL=caccamo.antonio@gmail.com
-#       - CF_API_KEY=05af04195b41d92c47d7c11e379329e7f86dd
-#     command: 
-#        - "--log.level=DEBUG"
-#        - "--api.insecure=true"
-#        - "--api.dashboard=true"
-#        - "--providers.docker=true"
-#        - "--providers.docker.exposedbydefault=false"
-#     volumes:
-# #      - /etc/localtime:/etc/localtime:ro
-#       - /var/run/docker.sock:/var/run/docker.sock:ro
-# #      - ./data/traefik.yml:/traefik.yml:ro
-# #     - ./data/acme.json:/acme.json
-# #      - ./data/config.yml:/config.yml:ro
-#       - ./logs:/var/log/traefik
-#     labels:
-#       - "traefik.enable=true"
-#       - "traefik.http.routers.traefik.entrypoints=http"
-#       - "traefik.http.routers.traefik.rule=Host(`traefik-dashboard.local.antoniocaccamo-labs.it`)"
-#       - "traefik.http.middlewares.traefik-auth.basicauth.users=USER:BASIC_AUTH_PASSWORD"
-#       - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
-#       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-#       - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
-#       - "traefik.http.routers.traefik-secure.entrypoints=https"
-#       - "traefik.http.routers.traefik-secure.rule=Host(`traefik-dashboard.local.antoniocaccamo-labs.it`)"
-#       - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
-#       - "traefik.http.routers.traefik-secure.tls=true"
-#       - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
-#       - "traefik.http.routers.traefik-secure.tls.domains[0].main=local.antoniocaccamo-labs.it"
-#       - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.antoniocaccamo-labs.it"
-#       - "traefik.http.routers.traefik-secure.service=api@internal"
-
-
   traefik:
-      image: "traefik:v2.11"
-      container_name: "traefik"
-      environment:
-        #- CF_DNS_API_TOKEN=${CF_DNS_TOKEN}
-        # If you choose to use an API Key instead of a Token, specify your email as well
-        - "CF_API_EMAIL=${MY_CF_API_EMAIL}"
-        - "CF_API_KEY=${MY_CF_API_KEY}"
-      command:
-        - "--log.level=DEBUG"
-        - "--api.insecure=true"
-        - "--api.dashboard=true"
-        - "--providers.docker=true"
-      #   - "--providers.docker.exposedbydefault=false"
-      #   - "--entrypoints.websecure.address=:443"
-      #   - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      #   - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      #   - "--certificatesresolvers.myresolver.acme.email=caccamo.antonio@gmail.com"
-      #   - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"  
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.api.service=api@internal"
-        - "traefik.http.routers.api.entrypoints=http"
-        - "traefik.http.routers.api.rule=Host(`dashboard.local.antoniocaccamo-labs.it`)"
-        # - "traefik.http.middlewares.traefik-auth.basicauth.users=antonio:antonio"
-        # - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
-        # - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-        # - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
-        # - "traefik.http.routers.traefik-secure.entrypoints=https"
-        # - "traefik.http.routers.traefik-secure.rule=Host(`dashboard.local.antoniocaccamo-labs.it`)"
-        # - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
-        # - "traefik.http.routers.traefik-secure.tls=true"
-        # - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
-        # - "traefik.http.routers.traefik-secure.tls.domains[0].main=local.antoniocaccamo-labs.it"
-        # - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.antoniocaccamo-labs.it"
-        # - "traefik.http.routers.traefik-secure.service=api@internal"
-      ports:
-        - "443:443"
-        - "80:80"
-      volumes:  
-        - "./letsencrypt:/letsencrypt"
-        - "/var/run/docker.sock:/var/run/docker.sock:ro"
-        - "./logs:/var/log/traefik"
-        - "./data/traefik.yml:/traefik.yml:ro"
-        - "./data/config.yml:/config.yml:ro"
-        - "./data/acme.json:/acme.json"
-      
-      networks:
-        - proxy
-
-  whoami:
-    image: "traefik/whoami"
-    container_name: "whoami"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.local.antoniocaccamo-labs.it`)"
-      # - "traefik.http.routers.whoami.entrypoints=websecure"
-      # - "traefik.http.routers.whoami.tls.certresolver=cloudflare"
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     networks:
       - proxy
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - CF_API_EMAIL=${MY_CF_API_EMAIL}
+      #- CF_DNS_API_${}
+      - CF_API_KEY=${MY_CF_API_KEY}
+      # be sure to use the correct one depending on if you are using a token or key
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./data/traefik.yml:/traefik.yml:ro"
+#     - ./data/acme.json:/acme.json
+      - "./data/config.yml:/config.yml:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik-dashboard.local.antoniocaccamo-labs.it`)"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=USER:BASIC_AUTH_PASSWORD"
+      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik-dashboard.local.antoniocaccamo-labs.it`)"
+      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].main=local.antoniocaccamo-labs.it"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.antoniocaccamo-labs.it"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
 
 networks:
   proxy:

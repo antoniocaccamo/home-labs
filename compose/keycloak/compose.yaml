@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:${MY_KEYCLOAK_VERSION}
+    container_name: keycloak
+    command: 
+      - start-dev
+      - --proxy-headers forwarded
+      - --proxy passthrough
+      - --verbose
+    environment:
+      - KEYCLOAK_ADMIN=${MY_KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${MY_KEYCLOAK_ADMIN_PASSWORD}
+#      - KC_HTTP_ENABLED=true
+      - KC_DB=${MY_KC_DB_TYPE}
+      - KC_DB_URL=${MY_KC_DB_URL}
+      - KC_DB_USERNAME=${MY_KC_DB_USERNAME}
+      - KC_DB_PASSWORD=${MY_KC_DB_PASSWORD}
+      - KC_HOSTNAME=login.local.antoniocaccamo-labs.it
+    volumes:
+      - "./data:/opt/keycloak/data/import"
+    networks:
+      - proxy
+      - database
+    # ports:
+    #   - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.login.entrypoints=http"
+      - "traefik.http.routers.login.rule=Host(`login.local.antoniocaccamo-labs.it`)"
+      # - "traefik.http.middlewares.login-https-redirect.redirectscheme.scheme=https"
+      # - "traefik.http.routers.login.middlewares=login-https-redirect"
+      # - "traefik.http.routers.login-secure.entrypoints=https"
+      # - "traefik.http.routers.login-secure.rule=Host(`login.local.antoniocaccamo-labs.it`)"
+      # - "traefik.http.routers.login-secure.tls=true"
+      # - "traefik.http.routers.login-secure.service=login"
+      - "traefik.http.services.login.loadbalancer.server.port=8080"
+      - "traefik.docker.network=proxy"
+
+networks:
+  proxy:
+    external: true
+  database:
+    external: true
