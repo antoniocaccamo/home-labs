@@ -1,4 +1,4 @@
-version: '3'
+#version: '3'
 
 services:
   traefik:
@@ -12,31 +12,31 @@ services:
     ports:
       - 80:80
       - 443:443
-    environment:
-      - CF_API_EMAIL=${MY_CF_API_EMAIL}
-      #- CF_DNS_API_${}
-      - CF_API_KEY=${MY_CF_API_KEY}
-      # be sure to use the correct one depending on if you are using a token or key
+    # environment:
+    #   #- "LEGO_DISABLE_CNAME_SUPPORT=true"
+    #   - CF_API_EMAIL=${MY_CF_API_EMAIL}
+    #   #- CF_DNS_API_${}
+    #   - CF_API_KEY=${MY_CF_API_KEY}
+    #   # be sure to use the correct one depending on if you are using a token or key
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./data/traefik.yml:/traefik.yml:ro"
 #     - ./data/acme.json:/acme.json
       - "./data/config.yml:/config.yml:ro"
+      - "./data/etc/letsencrypt/:/etc/letsencrypt:ro"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=http"
-      - "traefik.http.routers.traefik.rule=Host(`traefik-dashboard.local.antoniocaccamo-labs.it`)"
-      - "traefik.http.middlewares.traefik-auth.basicauth.users=USER:BASIC_AUTH_PASSWORD"
+      - "traefik.http.routers.traefik.rule=Host(`dashboard.local.antoniocaccamo-labs.it`)"
+      #- "traefik.http.middlewares.traefik-auth.basicauth.users=USER:BASIC_AUTH_PASSWORD"
+      #- "traefik.http.routers.traefik.middlewares=traefik-auth"
       - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
       - "traefik.http.routers.traefik-secure.entrypoints=https"
-      - "traefik.http.routers.traefik-secure.rule=Host(`traefik-dashboard.local.antoniocaccamo-labs.it`)"
-      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-secure.rule=Host(`dashboard.local.antoniocaccamo-labs.it`)"
+      #- "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
       - "traefik.http.routers.traefik-secure.tls=true"
-      - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
-      - "traefik.http.routers.traefik-secure.tls.domains[0].main=local.antoniocaccamo-labs.it"
-      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.local.antoniocaccamo-labs.it"
       - "traefik.http.routers.traefik-secure.service=api@internal"
 
 networks:

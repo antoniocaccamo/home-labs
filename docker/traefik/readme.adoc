@@ -1,0 +1,7 @@
+= traefik
+
+== certificates
+
+. with link:../certbot/readme.adoc[] create file
+. copy them to local dir
+. in link:./data/config.yml[] report key and full chain key

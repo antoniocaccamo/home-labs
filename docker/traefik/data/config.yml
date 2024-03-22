@@ -1,0 +1,15 @@
+
+#
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /etc/letsencrypt/local.antoniocaccamo-labs.it/fullchain.pem
+        keyFile: /etc/letsencrypt/local.antoniocaccamo-labs.it/privkey.pem
+http:
+  middlewares:
+    traefik-auth:
+      basicAuth:
+        users:
+          - "antonio:{SHA}oI8IusOa6ubJWAreeqg4e1oOdCg="
