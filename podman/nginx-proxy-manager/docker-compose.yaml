@@ -1,0 +1,35 @@
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    networks:
+      - proxy
+      - services
+      - database
+
+    ports:
+      - "8080:80"
+      - "8181:81"
+      - "8443:443"
+    environment:
+      DB_POSTGRES_HOST: ${DB_POSTGRES_HOST}
+      DB_POSTGRES_PORT: ${DB_POSTGRES_PORT}
+      DB_POSTGRES_USER: ${DB_POSTGRES_USER}
+      DB_POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD}
+      DB_POSTGRES_NAME: ${DB_POSTGRES_NAME}
+    volumes:
+      - npm_data:/data
+      - npm_data:/etc/letsencrypt
+
+networks:
+  proxy:
+    external: true
+  services:
+    external: true
+  database:
+    external: true
+
+volumes:
+  npm_data:
+    external: true

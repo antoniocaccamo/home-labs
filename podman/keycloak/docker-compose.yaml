@@ -1,0 +1,33 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
+    container_name: keycloak
+    restart: unless-stopped
+    networks:
+      - services
+      - database
+    ports:
+      - "9080:8080"
+      - "9443:8443"
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME} 
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    command:
+      - start-dev
+      - --db=postgres
+      - --db-url=${DB_URL}
+      - --db-username=${DB_USER}
+      - --db-password=${DB_PASSWORD}
+#     - --import-realm
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+networks:
+  services:
+    external: true
+  database:
+    external: true
+
+volumes:
+  keycloak_data:
+    external: true

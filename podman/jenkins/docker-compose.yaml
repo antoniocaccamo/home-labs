@@ -1,0 +1,19 @@
+services:
+  jenkins:
+    image: jenkins/jenkins:2.516.2-jdk21
+    container_name: jenkins
+    volumes:
+      - jenkins_data:/var/jenkins_home
+    restart: unless-stopped
+    networks:
+      - services
+    ports:
+      - "8082:8080"
+
+networks:
+  services:
+    external: true
+
+volumes:
+  jenkins_data:
+    external: true

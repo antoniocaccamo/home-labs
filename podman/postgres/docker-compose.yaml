@@ -1,0 +1,71 @@
+services:
+  postgres:
+    container_name: postgres
+    restart: on-failure
+    image: postgres:17.2
+ #  user: 1000:1000
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # If you want to expose these ports outside your dev PC,
+    # remove the "127.0.0.1:" prefix
+    networks:
+      - database
+    ports:
+      - 5432:5432
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin123
+  #   networks:
+  #     - database
+  #   ports:
+  #     - "5050:80"
+
+  #   volumes:
+  #     - pgadmin_data:/var/lib/pgadmin
+
+  adminer:
+    image: adminer:4.8.1-standalone
+    container_name: adminer
+    networks:
+      - database
+
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.docker.network=proxy"
+    #   - "traefik.http.routers.adminer.entrypoints=http"
+    #   - "traefik.http.services.adminer.loadbalancer.server.port=8080"
+    #   - "traefik.http.routers.adminer.rule=Host(`adminer.local.antoniocaccamo-labs.it`)"
+    #   - "traefik.http.middlewares.adminer-https-redirect.redirectscheme.scheme=https"
+    #   - "traefik.http.routers.adminer.middlewares=adminer-https-redirect"
+    #   - "traefik.http.routers.adminer-secure.entrypoints=https"
+    #   - "traefik.http.routers.adminer-secure.rule=Host(`adminer.local.antoniocaccamo-labs.it`)"
+    #   - "traefik.http.routers.adminer-secure.tls=true"
+    #   - "traefik.http.routers.adminer-secure.service=adminer"
+    ports:
+      - "8000:8080"
+
+networks:
+  database:
+    external: true
+
+volumes:
+  pg_data:
+    external: true
+  pgadmin_data:
+    external: true

@@ -1,0 +1,6 @@
+= Home Labs
+
+
+== Resources
+. https://www.theobjectivedad.com/pub/20230410-homelab-4/index.html[]
+. https://4sysops.com/archives/macvlan-network-driver-assign-mac-address-to-docker-containers[]
