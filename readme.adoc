@@ -1,6 +1,16 @@
 = Home Labs
 
 
+== Postgres Database
+
+[souce, sql]
+----
+CREATE DATABASE <service_name>;   
+CREATE USER <service_name_user> WITH PASSWORD '...';
+GRANT ALL PRIVILEGES ON DATABASE <service_name> TO <service_name_user>;
+GRANT CREATE ON SCHEMA public  TO <service_name_user>;
+----
+
 == Resources
 . https://www.theobjectivedad.com/pub/20230410-homelab-4/index.html[]
 . https://4sysops.com/archives/macvlan-network-driver-assign-mac-address-to-docker-containers[]
