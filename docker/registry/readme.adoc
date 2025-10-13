@@ -1,0 +1,20 @@
+= docker registry 
+
+A local docker registry
+
+== credentials
+To create credentials for the docker registry we can use the htpasswd command.
+
+.creating credentials
+[source, bash]  
+----
+mkdir -p auth
+echo ${DOCKER_REGISTRY_PASSWORD} | htpasswd -Bnbi antonio > auth/htpasswd
+
+cat auth/htpasswd
+antonio:$2y$05$/2akEImMm2Y2NOiGrZrZSehHCALxDeS2uVxu1V67GdAeZ0t9cKjou
+----
+
+== references
+ - https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-20-04[How To Set Up a Private Docker Registry on Ubuntu 20.04]
+ - https://www.baeldung.com/ops/docker-private-registry[A Guide to Docker Private Registry]
