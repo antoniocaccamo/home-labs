@@ -1,0 +1,5 @@
+debug: true
+
+ingress:
+  enabled: false
+  tls.source: secret

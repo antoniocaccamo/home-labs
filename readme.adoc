@@ -1,5 +1,11 @@
 = Home Labs
-
+:sectids:
+:secnum:
+:sectnumlevels: 5
+:source-highlighter: rouge
+:sectanchors:
+:sectlinks:
+:toc: auto
 
 == Postgres Database
 

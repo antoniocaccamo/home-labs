@@ -1,0 +1,58 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: traefik
+spec:
+  controllerName: traefik.io/gateway-controller
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: traefik
+  namespace: lab-az-ai
+spec:
+  gatewayClassName: traefik
+
+  # Only Routes from the same namespace are allowed.
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same 
+
+    - name: https
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: tls-secret
+            namespace: lab-az-ai
+
+      allowedRoutes:
+        namespaces:
+          from: Same
+
+    - name: tcp
+      protocol: TCP
+      port: 3000
+      allowedRoutes:
+        namespaces:
+          from: Same
+
+    - name: tls
+      protocol: TLS
+      port: 3443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: tls-secret
+            namespace: lab-az-ai
+
+      allowedRoutes:
+        namespaces:
+          from: Same

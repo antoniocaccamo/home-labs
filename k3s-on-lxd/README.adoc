@@ -1,0 +1,238 @@
+= labs-k3s-on-lxd
+:title: Building a K3S cluster on Proxmox LXCs
+:sectids:
+:secnum:
+:sectnumlevels: 5
+:source-highlighter: rouge
+:sectanchors:
+:sectlinks:
+:toc: auto
+
+
+== ct-certbot
+
+.Create Let's Encrypt certs
+[source, bash]
+----
+certbot certonly \
+  --dns-cloudflare \
+  --dns-cloudflare-credentials .secrets/cloudflare/${domain} \
+  -d ${domain} -d *.${domain}
+----
+
+== K3S
+
+=== cluster Setup
+
+Follow instructions:
+
+- https://medium.com/better-programming/rancher-k3s-kubernetes-on-proxmox-containers-2228100e2d13[Rancher K3s: Kubernetes on Proxmox Containers]
+
+- https://community-scripts.github.io/ProxmoxVE/[Proxmox VE Helper-Scripts (Community Edition)]
+
+=== metallb
+
+[source, bash]
+----
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+kubectl apply -f kubectl apply -f metallb
+----
+
+=== import certificate from ct-certbot
+
+[source, bash]
+----
+domain=...
+
+ssh -i ~/.ssh/<...> root@ct-certbot -t "cat /etc/letsencrypt/live/${domain}/privkey.pem" > /tmp/${domain}/privkey.pem
+ssh -i ~/.ssh/<...> root@ct-certbot -t "cat /etc/letsencrypt/live/${domain}/fullchain.pem" > /tmp/${domain}/fullchain.pem
+
+kubectl delete secret tls tls-secret --namespace default || true
+
+kubectl create secret tls tls-secret \
+    --cert=/tmp/${domain}/fullchain.pem \
+    --key=/tmp/${domain}/privkey.pem \
+    --namespace default
+----
+
+=== ingress-nginx
+
+[source, bash]
+----
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+----
+
+== traefik
+[source, bash]
+----
+kubectl create secret tls tls-secret \
+    --cert=/tmp/${domain}/fullchain.pem \
+    --key=/tmp/${domain}/privkey.pem \
+    --namespace traefik 
+----
+
+[source, bash]
+----
+helm install traefik traefik/traefik -f traefik/values.yaml  \
+  --namespace traefik --create-namespace --wait
+
+helm upgrade traefik traefik/traefik -f traefik/values.yaml  \
+  --namespace traefik
+
+----
+
+=== metallb config
+
+https://edwardbeazer.com/posts/kubernetes-traefik-setup-with-metallb[Kubernetes Traefik Setup with MetalLB]
+
+== secret for container registry
+
+.for github container registry
+[source, bash]
+----
+# for github container registry
+export CR_PAT=ghp_...
+kubectl create secret docker-registry ghcr-secret \
+  --docker-server=ghcr.io \
+  --docker-username=antoniocaccamo \
+  --docker-password=${CR_PAT} \
+  --namespace=lab-az-ai
+----
+
+.for private container registry
+[source, bash]
+----
+# for private container registry
+export CR_PRIV=Ant0nio!
+kubectl create secret docker-registry pcr-secret \
+  --docker-server=registry.private.antoniocaccamo.work \
+  --docker-username=antonio \
+  --docker-password=${CR_PRIV} \
+  --namespace=lab-az-ai
+----
+
+== rancher
+[source, bash]
+----
+helm install rancher rancher-latest/rancher -f rancher/values.yaml \                                                                                                                                                                                                                              1 ↵
+  --namespace cattle-system --create-namespace \
+  --set hostname=rancher.${domain} \
+  --set debug=true --set ingress.tls.source=secret --set bootstrapPassword=admin
+NAME: rancher
+LAST DEPLOYED: Fri Sep 26 16:21:45 2025
+NAMESPACE: cattle-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+Rancher Server has been installed.
+
+NOTE: Rancher may take several minutes to fully initialize. Please standby while Certificates are being issued, Containers are started and the Ingress rule comes up.
+
+Check out our docs at https://rancher.com/docs/
+
+## First Time Login
+
+If you provided your own bootstrap password during installation, browse to https://rancher.private.antoniocaccamo.work to get started.
+If this is the first time you installed Rancher, get started by running this command and clicking the URL it generates:
+
+```
+echo https://rancher.private.antoniocaccamo.work/dashboard/?setup=$(kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}')
+```
+
+To get just the bootstrap password on its own, run:
+
+```
+kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}{{ "\n" }}'
+----
+
+== secrets for docker registry
+
+[source, bash]
+----
+# for github container registry
+kubectl create secret docker-registry ghcr-secret \  
+  --docker-server=ghcr.io \
+  --docker-username=antonio.caccamo \  
+  --docker-password=${CR_PAT} \  
+  --namespace=lab-az-ai
+
+
+----
+
+
+== alloy
+
+[source, bash]
+----
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm install alloy grafana/alloy -f alloy/values.yaml  \
+  --namespace alloy-system --create-namespace
+
+kubectl create configmap --namespace alloy-system  alloy-config --from-file=config.alloy=alloy/config.alloy
+
+----
+
+
+== dashboard
+
+link:dashboard/README.adoc[dashboard]
+
+
+
+== reference
+ - https://medium.com/better-programming/rancher-k3s-kubernetes-on-proxmox-containers-2228100e2d13[Rancher K3s: Kubernetes on Proxmox Containers]
+ 
+ - https://traefik-oidc-auth.sevensolutions.cc/[traefik-oidc-auth]
+
+[Appendix]
+== Add SAN to K3s
+
+[source,bash]
+----
+[root@ct-k8s-master ~]# more /etc/systemd/system/k3s.service
+[Unit]
+Description=Lightweight Kubernetes
+Documentation=https://k3s.io
+Wants=network-online.target
+After=network-online.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=notify
+EnvironmentFile=-/etc/default/%N
+EnvironmentFile=-/etc/sysconfig/%N
+EnvironmentFile=-/etc/systemd/system/k3s.service.env
+KillMode=process
+Delegate=yes
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+TimeoutStartSec=0
+Restart=always
+RestartSec=5s
+ExecStartPre=/bin/sh -xc '! /usr/bin/systemctl is-enabled --quiet nm-cloud-setup.service 2>/dev/null'
+ExecStartPre=-/sbin/modprobe br_netfilter
+ExecStartPre=-/sbin/modprobe overlay
+ExecStart=/usr/local/bin/k3s \
+    server \
+	'--disable' \
+	'traefik' \
+	'--disable' \
+	'servicelb' \
+	'--node-name' \
+	'ct-k8s-master' \
+  '--tls-san' \
+  '192-168-1-31.sslip.io' \
+----
+
+
+

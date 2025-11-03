@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-service
+  namespace: labs
+spec:
+  type: ExternalName
+  externalName: loki.private.antoniocaccamo.work
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki-service
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: loki.private.antoniocaccamo.work

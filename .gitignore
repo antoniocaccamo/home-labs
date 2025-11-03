@@ -10,3 +10,7 @@
 **/node_modules
 
 **/*_data
+**/letsencrypt
+**/*.log
+**/.terraform*
+**/*.plan

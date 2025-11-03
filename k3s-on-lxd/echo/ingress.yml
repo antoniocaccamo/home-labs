@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        -  echo.private.antoniocaccamo.work
+      secretName: tls-secret
+  rules:
+    - host: echo.private.antoniocaccamo.work
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: echo-svc
+                port:
+                  name: http
