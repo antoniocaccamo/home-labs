@@ -11,14 +11,26 @@ resource "azurerm_kubernetes_cluster" "home-lab-aks" {
     name       = "default"
     node_count = 1
     # "Standard_B2s" is excellent for development/testing
-    vm_size    = "Standard_B2s" # Standard_DS2_v2
+    vm_size = "Standard_DS2_v2" # "Standard_B2s" # Standard_DS2_v2
   }
 
   identity {
     type = "SystemAssigned"
   }
 
-  tags = local.common_tags
+  oidc_issuer_enabled = true
+
+
+  depends_on = [
+    azurerm_container_registry.home-lab-acr
+  ]
+
+  tags = merge(
+    local.common_tags,
+    {
+      component = "aks"
+    }
+  )
 }
 
 

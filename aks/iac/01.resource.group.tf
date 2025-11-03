@@ -7,7 +7,10 @@ resource "random_string" "unique" {
 resource "azurerm_resource_group" "rg-home-lab" {
   name     = "rg-${local.base_name}"
   location = local.location
-  tags     = local.common_tags
+  
+  tags = merge(
+    local.common_tags
+  )
 }
 
 resource "azurerm_user_assigned_identity" "mi-home-lab" {
@@ -15,5 +18,8 @@ resource "azurerm_user_assigned_identity" "mi-home-lab" {
   location            = azurerm_resource_group.rg-home-lab.location
   resource_group_name = azurerm_resource_group.rg-home-lab.name
 
-  tags = local.common_tags
+  tags = merge(
+    local.common_tags
+  )
+
 }

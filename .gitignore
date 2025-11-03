@@ -14,3 +14,9 @@
 **/*.log
 **/.terraform*
 **/*.plan
+
+**/prismacloud
+
+**/.terraform
+**/terraform.tfstate*
+**/tf.plan
