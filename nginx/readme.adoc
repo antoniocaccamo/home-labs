@@ -1,0 +1,11 @@
+= nginx
+:sectids:
+:secnum:
+:sectnumlevels: 5
+:source-highlighter: rouge
+:sectanchors:
+:sectlinks:
+:toc: auto
+
+
+site collection for home lab nginx experiments

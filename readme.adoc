@@ -7,6 +7,20 @@
 :sectlinks:
 :toc: auto
 
+== Labs
+
+link:aks/readme.adoc[Azure Kubernetes Service (AKS)]
+
+link:k3s-on-lxd/readme.adoc[K3s Labs]
+
+link:docker/readme.adoc[Docker Labs]
+
+link:podman/readme.adoc[Podman Labs]
+
+link:nginx/readme.adoc[Nginx Labs]
+
+
+[Appendix]
 == Postgres Database
 
 [souce, sql]
