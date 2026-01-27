@@ -1,0 +1,22 @@
+= Lab OAuth2
+:github:
+:sectids:
+:secnum:
+:sectnumlevels: 5
+:source-highlighter: rouge
+:sectanchors:
+:sectlinks:
+:toc: auto
+
+== Create Docker Registry Secret
+
+[source,bash]
+----
+kubectl create namespace lab-oauth2 || true
+
+kubectl create secret docker-registry ghcr-secret \
+  --docker-server=ghcr.io \
+  --docker-username=antoniocaccamo \
+  --docker-password=${CR_PAT} \
+--namespace labs
+----

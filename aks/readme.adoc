@@ -39,3 +39,7 @@ az aks get-credentials \
     --name aks-home-lab \
     --admin
 ----
+
+== lab-oauth2
+
+link to link:lab-oauth2/readme.adoc[lab oauth2] experiments.

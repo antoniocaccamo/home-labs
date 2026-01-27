@@ -1,0 +1,21 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: lab-oauth2-ingress-route
+  namespace: labs
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    secretName: tls-secret
+  routes:
+    - match: Host(`akslab-oauth2.private.antoniocaccamo.work`)
+      kind: Rule
+      services:
+        - name: lab-oauth2-spa
+          port: 80
+    - match: Host(`akslab-oauth2.private.antoniocaccamo.work`) && PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: lab-oauth2-backend
+          port: 80

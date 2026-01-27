@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-oauth2-spa
+  namespace: labs
+spec:
+  selector:
+      app: lab-oauth2
+      component: lab-oauth2-spa
+      app.kubernetes.io/name: lab-oauth2
+      app.kubernetes.io/component: spa
+  ports:
+  - port: 80
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-oauth2-backend
+  namespace: labs
+spec:
+  selector:
+    app: lab-oauth2
+    component: lab-oauth2-backend
+    app.kubernetes.io/name: lab-oauth2
+    app.kubernetes.io/component: backend
+  
+  ports:
+  - port: 80
+    targetPort: 8080
