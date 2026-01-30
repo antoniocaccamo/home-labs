@@ -1,0 +1,22 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: juice-shop-ingress-route
+  namespace: vulnerables
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    secretName: tls-secret
+  routes:
+    - match: Host(`juice-shop-aks.private.antoniocaccamo.work`)
+      kind: Rule
+      services:
+        - name: juice-shop
+          port: 80
+    # - match: Host(`lab-ms-graph-aks.private.antoniocaccamo.work`) && PathPrefix(`/api`)
+    #   kind: Rule
+    #   services:
+    #     - name: lab-ms-graph
+    #       port: 80

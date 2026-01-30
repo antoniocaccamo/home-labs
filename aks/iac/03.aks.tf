@@ -8,10 +8,11 @@ resource "azurerm_kubernetes_cluster" "home-lab-aks" {
   sku_tier = "Free"
 
   default_node_pool {
-    name       = "default"
-    node_count = 1
+    name       = "aksnodepool"
+    node_count = 2
     # "Standard_B2s" is excellent for development/testing
-    vm_size = "Standard_DS2_v2" # "Standard_B2s" # Standard_DS2_v2
+    vm_size = "Standard_B2s" # "Standard_B2s" # Standard_DS2_v2 Standard_B4als_v2 Standard_B2s_v2
+    os_sku = "AzureLinux3"
   }
 
   identity {
@@ -20,6 +21,15 @@ resource "azurerm_kubernetes_cluster" "home-lab-aks" {
 
   oidc_issuer_enabled = true
 
+  microsoft_defender {
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.law-home-lab.id
+  }
+
+  oms_agent {
+    msi_auth_for_monitoring_enabled = true
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.law-home-lab.id
+  
+  }
 
   depends_on = [
     azurerm_container_registry.home-lab-acr

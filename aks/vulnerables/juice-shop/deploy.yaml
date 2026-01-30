@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: juice-shop
+  namespace: vulnerables
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vulnerables
+      component: juice-shop
+  template:
+    metadata:
+      labels:
+        app: vulnerables
+        component: juice-shop
+    spec:
+      containers:
+      - name: juice-shop
+        image: docker.io/bkimminich/juice-shop:v19.1.1
+        ports:
+        - containerPort: 3000

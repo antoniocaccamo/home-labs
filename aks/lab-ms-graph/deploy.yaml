@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-ms-graph
+  namespace: labs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: labs
+      component: lab-ms-graph
+  template:
+    metadata:
+      labels:
+        app: labs
+        component: lab-ms-graph
+    spec:
+      containers:
+        - name: lab-ms-graph
+          image: ghcr.io/antoniocaccamo/lab-ms-graph/lab-ms-graph:v1.1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: lab-ms-graph
+                  key: TENANT_ID
+            - name: WEBAPP_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: lab-ms-graph
+                  key: WEBAPP_CLIENT_ID
+            - name: WEBAPP_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: lab-ms-graph
+                  key: WEBAPP_CLIENT_SECRET
+            - name: MS_GRAPH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: lab-ms-graph
+                  key: MS_GRAPH_CLIENT_ID
+            - name: MS_GRAPH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: lab-ms-graph
+                  key: MS_GRAPH_CLIENT_SECRET

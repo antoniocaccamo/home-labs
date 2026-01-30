@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dolevf-dvga
+  namespace: vulnerables
+spec:
+  selector:
+    app: vulnerables
+    component: dolevf-dvga
+  ports:
+    - port: 80
+      targetPort: 5013

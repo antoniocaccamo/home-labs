@@ -11,14 +11,13 @@ spec:
       kind: Gateway
 
   hostnames:
-    - lab-oauth2.private.antoniocaccamo.work
+    - lab-oauth2-aks.private.antoniocaccamo.work
 
   rules:
     - filters:
         - type: RequestRedirect
           requestRedirect:
             scheme: https
-
 
 ---
 apiVersion: gateway.networking.k8s.io/v1
@@ -33,7 +32,7 @@ spec:
       kind: Gateway
 
   hostnames:
-    - lab-oauth2.private.antoniocaccamo.work
+    - lab-oauth2-aks.private.antoniocaccamo.work
 
   rules:
     - matches:

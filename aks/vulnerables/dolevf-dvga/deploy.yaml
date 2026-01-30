@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dolevf-dvga
+  namespace: vulnerables
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vulnerables
+      component: dolevf-dvga
+  template:
+    metadata:
+      labels:
+        app: vulnerables
+        component: dolevf-dvga
+    spec:
+      containers:
+      - name: dolevf-dvga
+        image: docker.io/dolevf/dvga:2.1.2
+        ports:
+        - containerPort: 5013
+        env:
+        - name: WEB_HOST
+          value: "0.0.0.0"
+
+
+
+  Offense 183576 - 
+
+
+
+  =IFERROR(VLOOKUP($B23;QuickAction!$B$5:$C$18;2;FALSE);"-")
+
+  =IF(LEFT($F23)="-";"";$C23)
