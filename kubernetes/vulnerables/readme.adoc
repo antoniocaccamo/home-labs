@@ -1,0 +1,7 @@
+# vulnerables
+
+This folder contains the deployment files for vulnerable applications used for security testing and learning purposes within the AKS cluster. These applications are intentionally designed to have security vulnerabilities, allowing users to practice identifying and exploiting them in a controlled environment.
+
+# juice-shop
+
+#dolevf-dvga

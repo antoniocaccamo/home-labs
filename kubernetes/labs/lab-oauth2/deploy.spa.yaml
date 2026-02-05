@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-oauth2-spa
+  namespace: labs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lab-oauth2
+      component: lab-oauth2-spa
+      app.kubernetes.io/name: lab-oauth2
+      app.kubernetes.io/component: spa
+  template:
+    metadata:
+      labels:
+        app: lab-oauth2
+        component: lab-oauth2-spa
+        app.kubernetes.io/name: lab-oauth2
+        app.kubernetes.io/component: spa
+    spec:
+      imagePullSecrets:
+        - name: pcr-ghcr-secret
+      containers:
+      - name: lab-oauth2-spa
+        resources:
+          requests:
+            memory: "8Mi"
+            cpu: "50m"
+          limits:
+            memory: "16Mi"
+            cpu: "500m"
+        image: ghcr.io/antoniocaccamo/labs-oauth2/lab-oauth2-spa:v1.0.0
+        env:
+        - name: PREFIX_TENANT_ID
+          valueFrom:
+            secretKeyRef:
+              name: lab-oauth2
+              key: TENANT_ID
+        - name: PREFIX_LAB_OAUTH2_SPA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: lab-oauth2
+              key: LAB_OAUTH2_SPA_CLIENT_ID
+        - name: PREFIX_LAB_OAUTH2_RESOURCE_SERVER_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: lab-oauth2
+              key: LAB_OAUTH2_RESOURCE_SERVER_CLIENT_ID
+
+        - name: PREFIX_LAB_API_BASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: lab-oauth2
+              key: LAB_API_BASE_URL
+
+        - name: ASSET_DIR
+          value: /var/www/html
+        
+        - name: APP_PREFIX
+          value: PREFIX_
+        
+        ports:
+          - containerPort: 80

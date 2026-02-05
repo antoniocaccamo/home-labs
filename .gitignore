@@ -20,3 +20,4 @@
 **/.terraform
 **/terraform.tfstate*
 **/tf.plan
+**/secrets.yaml

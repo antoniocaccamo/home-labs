@@ -1,0 +1,24 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-dashboard-oidc
+  namespace: traefik
+spec:
+  plugin:
+    traefik-oidc-auth:
+      Secret: "urn:k8s:secret:traefik-dashboard-oidc:sessionSecret"
+      Provider:
+        Url: "https://login.microsoftonline.com/53695c6a-e1de-42b9-be99-97f60ccfd8b0/v2.0"
+        ClientID: "urn:k8s:secret:traefik-dashboard-oidc:clientId"
+        ClientSecret: "urn:k8s:secret:traefik-dashboard-oidc:clientSecret"
+      #  UsePkce: true
+      # ValidAudience: "whoami"
+      Scopes:
+        - profile
+        - email
+        - openid
+      Headers:
+        - Name: "Authorization"
+          Value: "{{`Bearer {{ .accessToken }}`}}"
+        - Name: "X-Oidc-Username"
+          Value: "{{`{{ .claims.preferred_username }}`}}"

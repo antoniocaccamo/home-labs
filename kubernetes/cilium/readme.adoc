@@ -1,0 +1,9 @@
+# cilium
+
+.Installation
+[source,kubernetes,cilium,bash]
+----
+helm install cilium cilium/cilium \
+    --values values.yaml \
+    --namespace kube-system
+----

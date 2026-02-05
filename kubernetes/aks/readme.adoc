@@ -1,0 +1,45 @@
+= Azure Kubernetes Service (AKS)
+Antonio Caccamo <caccamo.antonio@gmail.com>
+:github:
+:sectids:
+:secnum:
+:sectnumlevels: 5
+:source-highlighter: rouge
+:sectanchors:
+:sectlinks:
+:toc: auto
+
+== Setup Azure CLI
+
+[source,bash]
+----
+export ARM_SUBSCRIPTION_ID=908894ac-....
+
+terraform init
+terraform plan ..
+terraform apply
+----
+
+.Access Azure and ACR
+[source, bash]
+----
+az login
+az acr login --name acraktdev001
+----
+
+
+
+== kubectl
+
+.Get AKS credentials
+[source, bash]
+----
+az aks get-credentials \
+    --resource-group rg-home-lab \
+    --name aks-home-lab \
+    --admin
+----
+
+== lab-oauth2
+
+link to link:lab-oauth2/readme.adoc[lab oauth2] experiments.
