@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spa-lab-az-ai-deploy
-  namespace: lab-az-ai
+  namespace: labs
 spec:
   replicas: 1
   selector:
@@ -31,6 +31,12 @@ spec:
               memory: "128Mi"
           env:
           - name: TENANT_ID
-            value: "53695c6a-e1de-42b9-be99-97f60ccfd8b0"
+            valueFrom:
+              secretKeyRef:
+                name: lab-az-ai
+                key: TENANT_ID
           - name: CLIENT_ID
-            value: "1c2110d7-3081-4451-a3cc-f5dc14c9d74d"
+            valueFrom:
+              secretKeyRef:
+                name: lab-az-ai
+                key: WEBAPP_CLIENT_ID

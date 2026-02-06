@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spa-lab-az-ai-service
+  namespace: labs
+spec:
+  selector:
+    app: lab-az-ai
+    component: spa
+  ports:
+  - port: 80
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-lab-az-ai-service
+  namespace: labs
+spec:
+  selector:
+    app: lab-az-ai
+    component: webapp
+  ports:
+  - port: 80
+    targetPort: 8080
