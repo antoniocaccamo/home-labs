@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: lab-ms-graph
-          image: ghcr.io/antoniocaccamo/lab-ms-graph/lab-ms-graph:v1.1.0
+          image: ghcr.io/antoniocaccamo/lab-ms-graph/lab-ms-graph:v1.1.1
           ports:
             - containerPort: 8080
           env:

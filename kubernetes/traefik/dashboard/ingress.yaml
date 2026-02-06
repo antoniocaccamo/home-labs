@@ -13,7 +13,8 @@ spec:
   - match: Host(`traefik.private.antoniocaccamo.work`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`) || PathPrefix(`/oidc/callback`) )
     kind: Rule
     middlewares:
-      - name: traefik-dashboard-oidc
+#     - name: traefik-dashboard-oidc
+      - name: traefikoidc-dashboard
     services:
     - name: api@internal
       kind: TraefikService

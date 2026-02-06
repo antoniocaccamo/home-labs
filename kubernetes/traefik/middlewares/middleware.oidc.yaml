@@ -22,3 +22,25 @@ spec:
           Value: "{{`Bearer {{ .accessToken }}`}}"
         - Name: "X-Oidc-Username"
           Value: "{{`{{ .claims.preferred_username }}`}}"
+
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefikoidc-dashboard 
+  namespace: traefik
+spec:
+  plugin:
+    traefikoidc:
+      # OIDC Provider Configuration
+      providerUrl: "urn:k8s:secret:traefik-dashboard-oidc:providerUrl"
+      clientID: "urn:k8s:secret:traefik-dashboard-oidc:clientId"
+      clientSecret: "urn:k8s:secret:traefik-dashboard-oidc:clientSecret"
+      callbackURL: "/oidc/callback"
+      enablePKCE: true
+
+      # Session Configuration
+      sessionEncryptionKey: "urn:k8s:secret:traefik-dashboard-oidc:sessionSecret"
+      sessionMaxAge: 28800  # 8 hours
+      forceHTTPS: true
